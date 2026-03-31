@@ -55,15 +55,9 @@ type AnalysisResult = {
   recommendations: Recommendation[];
 };
 
-const DEFAULT_CODE = `function calculateTotal(items) {
-  let total = 0;
-  for (const item of items) {
-    if (item.active) {
-      total += item.value;
-    }
-  }
-  return total;
-}`;
+const DEFAULT_CODE = `
+// Seu código JavaScript ou TypeScript aqui
+`;
 
 export default function HomePage() {
   const [code, setCode] = useState(DEFAULT_CODE);
@@ -143,10 +137,10 @@ export default function HomePage() {
                       <div className="flex items-center justify-between">
                         <span
                           className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest ${rec.severity === "high"
-                              ? "bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400"
-                              : rec.severity === "medium"
-                                ? "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400"
-                                : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+                            ? "bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400"
+                            : rec.severity === "medium"
+                              ? "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400"
+                              : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
                             }`}
                         >
                           {rec.severity}
