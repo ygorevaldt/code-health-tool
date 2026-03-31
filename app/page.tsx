@@ -55,7 +55,7 @@ type AnalysisResult = {
   recommendations: Recommendation[];
 };
 
-const DEFAULT_CODE = `// Seu código JavaScript ou TypeScript aqui`;
+const DEFAULT_CODE = `// Seu código JavaScript aqui`;
 
 export default function HomePage() {
   const [code, setCode] = useState(DEFAULT_CODE);
