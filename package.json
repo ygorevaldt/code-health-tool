@@ -1,24 +1,33 @@
 {
   "name": "code-health-tool",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "2.0.0",
+  "private": true,
   "scripts": {
-    "install-backend": "cd backend && npm install",
-    "install-frontend": "cd frontend && npm install",
-    "install-all": "npm run install-backend && npm run install-frontend",
-    "backend": "cd backend && npm start",
-    "frontend": "cd frontend && npm start",
-    "up": "npx concurrently \"npm run backend\" \"npm run frontend\"",
-    "dev": "npm run up",
-    "down": "npx kill-port 3000 3001 || true",
-    "start": "npm run backend"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "bin": {
+    "code-health": "bin/code-health.js"
+  },
+  "dependencies": {
+    "eslint": "^8.57.0",
+    "next": "15.2.3",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "typhonjs-escomplex": "^0.1.0"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2",
-    "kill-port": "^1.6.0"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "Code Health Tool frontend and backend starter"
+    "@monaco-editor/react": "^4.7.0",
+    "@types/eslint": "^9.6.1",
+    "@types/glob": "^8.1.0",
+    "@types/node": "20.14.2",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.4",
+    "typescript": "5.6.2"
+  }
 }
