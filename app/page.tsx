@@ -70,6 +70,7 @@ export default function HomePage() {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleAnalyze = async () => {
     setLoading(true);
@@ -104,13 +105,15 @@ export default function HomePage() {
       <main className="mx-auto max-w-7xl px-6 py-12">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           {/* Left Column: Editor and Recommendations */}
-          <div className="flex flex-col gap-8 lg:col-span-8">
+          <div className={`flex flex-col gap-8 transition-all duration-500 ease-in-out ${isFocused ? "lg:col-span-12" : "lg:col-span-8"}`}>
             <Editor
               code={code}
               setCode={setCode}
               onAnalyze={handleAnalyze}
               isLoading={loading}
               issues={result?.lint?.issues}
+              isFocused={isFocused}
+              onToggleFocus={() => setIsFocused(!isFocused)}
             />
 
             {error && (
@@ -159,7 +162,7 @@ export default function HomePage() {
           </div>
 
           {/* Right Column: Score and Metrics */}
-          <div className="flex flex-col gap-8 lg:col-span-4">
+          <div className={`flex flex-col gap-8 transition-all duration-500 ease-in-out ${isFocused ? "lg:col-span-12" : "lg:col-span-4"}`}>
             <ScoreCard score={result ? result.score.overall : null} />
 
             {result && (

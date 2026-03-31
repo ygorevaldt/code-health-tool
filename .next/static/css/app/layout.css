@@ -584,6 +584,9 @@ video {
 .h-full {
   height: 100%;
 }
+.h-\[700px\] {
+  height: 700px;
+}
 .min-h-\[300px\] {
   min-height: 300px;
 }
@@ -1031,8 +1034,16 @@ video {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
 .duration-500 {
   transition-duration: 500ms;
+}
+.ease-in-out {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 :root {
@@ -1284,6 +1295,10 @@ body.light {
 
   .lg\:col-span-8 {
     grid-column: span 8 / span 8;
+  }
+
+  .lg\:col-span-12 {
+    grid-column: span 12 / span 12;
   }
 
   .lg\:grid-cols-12 {

@@ -8,6 +8,8 @@ interface EditorProps {
   setCode: (code: string) => void;
   onAnalyze: () => void;
   isLoading: boolean;
+  isFocused?: boolean;
+  onToggleFocus?: () => void;
   issues?: {
     line: number;
     column: number;
@@ -16,7 +18,15 @@ interface EditorProps {
   }[];
 }
 
-export default function Editor({ code, setCode, onAnalyze, isLoading, issues = [] }: EditorProps) {
+export default function Editor({ 
+  code, 
+  setCode, 
+  onAnalyze, 
+  isLoading, 
+  isFocused = false, 
+  onToggleFocus, 
+  issues = [] 
+}: EditorProps) {
   const monacoRef = useRef<any>(null);
   const editorRef = useRef<any>(null);
 
@@ -65,26 +75,49 @@ export default function Editor({ code, setCode, onAnalyze, isLoading, issues = [
           <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">Analisador Técnico</h2>
           <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Insira o código JavaScript para análise de saúde instantânea.</p>
         </div>
-        <button
-          onClick={onAnalyze}
-          disabled={isLoading}
-          className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
-        >
-          {isLoading ? (
-            <div className="flex items-center gap-2">
-              <svg className="h-4 w-4 animate-spin text-zinc-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onToggleFocus}
+            title={isFocused ? "Sair do Modo Foco" : "Modo Foco (Expandir)"}
+            className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-200 bg-white text-zinc-500 transition hover:bg-zinc-50 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900 dark:hover:text-white"
+          >
+            {isFocused ? (
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 14h6v6" />
+                <path d="M20 10h-6V4" />
+                <path d="M14 10l7-7" />
+                <path d="M3 21l7-7" />
               </svg>
-              <span>Analisando...</span>
-            </div>
-          ) : (
-            "Analisar"
-          )}
-        </button>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 3h6v6" />
+                <path d="M9 21H3v-6" />
+                <path d="M21 3l-7 7" />
+                <path d="M3 21l7-7" />
+              </svg>
+            )}
+          </button>
+          <button
+            onClick={onAnalyze}
+            disabled={isLoading}
+            className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+          >
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <svg className="h-4 w-4 animate-spin text-zinc-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Analisando...</span>
+              </div>
+            ) : (
+              "Analisar"
+            )}
+          </button>
+        </div>
       </div>
 
-      <div className="relative h-[450px] overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800">
+      <div className={`relative overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800 transition-all duration-500 ease-in-out ${isFocused ? "h-[700px]" : "h-[450px]"}`}>
         <MonacoEditor
           height="100%"
           language="javascript"
