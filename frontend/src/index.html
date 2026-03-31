@@ -1,0 +1,199 @@
+<!doctype html>
+<html ng-app="codeApp">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Code Health Tool</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/theme/material-darker.min.css"
+    />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/javascript/javascript.min.js"></script>
+    <script src="app.js"></script>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body ng-controller="MainCtrl">
+    <div class="app-shell">
+      <header>
+        <div>
+          <h1>Code Health Tool</h1>
+          <p>Escreva seu código JavaScript e veja score, complexidade e problemas em tempo real.</p>
+        </div>
+      </header>
+
+      <main>
+        <section class="editor-panel">
+          <div class="panel-header">
+            <span>Editor de código</span>
+            <button ng-click="analyze()">Analisar</button>
+          </div>
+          <div id="editor"></div>
+        </section>
+
+        <section class="result-panel" ng-if="result">
+          <div class="panel-header">
+            <span>Resultado</span>
+          </div>
+
+          <div class="result-grid">
+            <div class="card">
+              <h2>{{result.score}}</h2>
+              <p>Score</p>
+              <strong>{{result.status}}</strong>
+            </div>
+            <div class="card">
+              <h2>{{result.metrics.lintErrors}}</h2>
+              <p>Erros ESLint</p>
+            </div>
+            <div class="card">
+              <h2>{{result.metrics.lintWarnings}}</h2>
+              <p>Avisos ESLint</p>
+            </div>
+            <div class="card">
+              <h2>{{result.metrics.complexity}}</h2>
+              <p>Complexidade</p>
+            </div>
+            <div class="card">
+              <h2>{{result.metrics.maxDepth}}</h2>
+              <p>Profundidade</p>
+            </div>
+            <div class="card">
+              <h2>{{result.metrics.totalFunctions}}</h2>
+              <p>Funções</p>
+            </div>
+            <div class="card">
+              <h2>{{result.metrics.totalIssues}}</h2>
+              <p>Total de problemas</p>
+            </div>
+            <div class="card">
+              <h2>{{result.metrics.es6Issues}}</h2>
+              <p>Problemas ES6</p>
+            </div>
+          </div>
+
+          <div class="health-card">
+            <h3>Saúde do código</h3>
+            <div class="health-bar" ng-repeat="bar in healthBars">
+              <div class="label-row">
+                <span>{{bar.label}}</span>
+                <strong>{{bar.display}}</strong>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill" ng-style="{ width: bar.width + '%', background: bar.color }"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendations-card">
+            <h3>Recomendações</h3>
+            <ul ng-if="recommendations.length > 0">
+              <li ng-repeat="rec in recommendations">{{rec}}</li>
+            </ul>
+            <p ng-if="recommendations.length === 0">Nenhuma recomendação específica. Código em boa saúde.</p>
+          </div>
+
+          <div class="chart-card">
+            <h3>Proporção por severidade</h3>
+            <div class="chart-bar" ng-repeat="bar in severityBars">
+              <div class="chart-label">
+                <span>{{bar.label}}</span>
+                <strong>{{bar.value}}</strong>
+              </div>
+              <div class="chart-track">
+                <div class="chart-fill" ng-style="{ width: bar.width + '%', background: bar.color }"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3>Contagem por categoria</h3>
+            <div class="chart-bar" ng-repeat="bar in categoryBars">
+              <div class="chart-label">
+                <span>{{bar.label}}</span>
+                <strong>{{bar.value}}</strong>
+              </div>
+              <div class="chart-track">
+                <div class="chart-fill" ng-style="{ width: bar.width + '%', background: bar.color }"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="issues-card">
+            <h3>Problemas ({{result.issues.length}})</h3>
+            <div ng-if="problemCategories.length === 0">
+              <p>Nenhum problema encontrado.</p>
+            </div>
+            <div ng-repeat="category in problemCategories" class="issue-category">
+              <h4>{{category.label}}</h4>
+              <ul>
+                <li ng-repeat="item in category.items">
+                  <strong>{{item.ruleId}}</strong>
+                  <span class="issue-location">(linha {{item.line}}{{item.column ? ', col ' + item.column : ''}})</span>
+                  : {{item.message}}
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="detail-card">
+            <h3>Duplicações</h3>
+            <div ng-if="duplicateLines.length === 0">
+              <p>Nenhuma duplicação detectada.</p>
+            </div>
+            <ul ng-if="duplicateLines.length > 0">
+              <li ng-repeat="line in duplicateLines">{{line}}</li>
+            </ul>
+          </div>
+
+          <div class="detail-card">
+            <h3>Funções</h3>
+            <div ng-if="functionDetails.length === 0">
+              <p>Nenhuma função detectada.</p>
+            </div>
+            <table ng-if="functionDetails.length > 0">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Linha</th>
+                  <th>Linhas</th>
+                  <th>Parâmetros</th>
+                  <th>Observações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="fn in functionDetails">
+                  <td>{{fn.name}}</td>
+                  <td>{{fn.line}}</td>
+                  <td>{{fn.lines}}</td>
+                  <td>{{fn.params}}</td>
+                  <td>
+                    <span ng-if="fn.isLong">Longa</span>
+                    <span ng-if="fn.isLong && fn.manyParams"> · </span>
+                    <span ng-if="fn.manyParams">Muitos parâmetros</span>
+                    <span ng-if="!fn.isLong && !fn.manyParams">OK</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="metrics-card">
+            <h3>Métricas detalhadas</h3>
+            <div class="metrics-table">
+              <div class="metric-row" ng-repeat="metric in metricEntries">
+                <span>{{metric.label}}</span>
+                <strong>{{metric.value}}</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

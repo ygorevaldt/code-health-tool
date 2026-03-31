@@ -1,0 +1,24 @@
+{
+  "name": "code-health-tool",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "install-backend": "cd backend && npm install",
+    "install-frontend": "cd frontend && npm install",
+    "install-all": "npm run install-backend && npm run install-frontend",
+    "backend": "cd backend && npm start",
+    "frontend": "cd frontend && npm start",
+    "up": "npx concurrently \"npm run backend\" \"npm run frontend\"",
+    "dev": "npm run up",
+    "down": "npx kill-port 3000 3001 || true",
+    "start": "npm run backend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "kill-port": "^1.6.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Code Health Tool frontend and backend starter"
+}

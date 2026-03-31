@@ -1,0 +1,33 @@
+export function getLintConfig() {
+  return {
+    env: { browser: true, node: true, es2021: true },
+    parserOptions: { ecmaVersion: 2021, sourceType: "module" },
+    rules: {
+      "no-unused-vars": ["warn", { vars: "all", args: "after-used", ignoreRestSiblings: true }],
+      "no-undef": "error",
+      "no-redeclare": "error",
+      eqeqeq: "error",
+      "no-extra-semi": "error",
+      "no-unreachable": "error",
+      "no-unsafe-finally": "error",
+      "no-var": "warn",
+      "prefer-const": "warn",
+      "prefer-template": "warn",
+      "prefer-arrow-callback": "warn",
+      "prefer-rest-params": "warn",
+      "no-console": "warn",
+      "no-duplicate-imports": "warn",
+      "no-useless-concat": "warn",
+      "no-useless-return": "warn",
+      "no-empty": "warn",
+      "no-sequences": "error",
+      "no-duplicate-case": "error",
+      "no-fallthrough": "warn",
+      "arrow-body-style": ["warn", "as-needed"],
+      "max-params": ["warn", 4],
+      "max-depth": ["warn", 4],
+      "max-lines-per-function": ["warn", { max: 80, skipBlankLines: true, skipComments: true }],
+      complexity: ["warn", { max: 10 }],
+    },
+  };
+}
