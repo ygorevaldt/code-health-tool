@@ -2,6 +2,8 @@ import type { SourceCode } from "eslint";
 
 export type Severity = "low" | "medium" | "high";
 
+export type ProjectType = "javascript" | "react" | "vue" | "angular" | "angularjs" | "node" | "typescript";
+
 export type Issue = {
   ruleId: string;
   message: string;
@@ -44,6 +46,7 @@ export type Recommendation = {
 
 export type AnalyzerContext = {
   code: string;
+  type?: ProjectType;
   sourceCode?: SourceCode;
   lint?: {
     issues: Issue[];

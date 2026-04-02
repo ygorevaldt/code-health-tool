@@ -7,6 +7,7 @@ import ScoreCard from "../components/ScoreCard";
 import MetricCard from "../components/MetricCard";
 import IssuesList from "../components/IssuesList";
 import FunctionsList from "../components/FunctionsList";
+import type { ProjectType } from "../lib/analyzer/types";
 
 // Types
 type Issue = {
@@ -55,10 +56,11 @@ type AnalysisResult = {
   recommendations: Recommendation[];
 };
 
-const DEFAULT_CODE = `// Seu código JavaScript aqui`;
+const DEFAULT_CODE = `// Escreva ou cole seu código aqui.`;
 
 export default function HomePage() {
   const [code, setCode] = useState(DEFAULT_CODE);
+  const [projectType, setProjectType] = useState<ProjectType>("javascript");
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -71,7 +73,7 @@ export default function HomePage() {
       const response = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
+        body: JSON.stringify({ code, type: projectType }),
       });
 
       if (!response.ok) {
@@ -103,6 +105,8 @@ export default function HomePage() {
               setCode={setCode}
               onAnalyze={handleAnalyze}
               isLoading={loading}
+              projectType={projectType}
+              setProjectType={setProjectType}
               issues={result?.lint?.issues}
               isFocused={isFocused}
               onToggleFocus={() => setIsFocused(!isFocused)}
